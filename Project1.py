@@ -45,13 +45,36 @@ def calculate_average(bill_lengths):
 
     return sum / len(bill_lengths)
 
-        
+def compare_islands(penguins, year):
+
+    max = 0
+    max_island = ""
+
+    for island in penguins:
+
+        avg = calculate_average(penguins[island][year])
+        print(island + ": " + str(avg))
+
+        if avg > max:
+
+            max = avg
+            max_island = island
+
+    return max_island
 
 
 
-data = read_file("penguins.csv")
 
-average = calculate_average(data["Torgersen"]["2007"])
 
-print(average)
+
+
+
+
+penguins = read_file("penguins.csv")
+
+# average = calculate_average(data["Torgersen"]["2007"])
+
+
+
+print(compare_islands(penguins, "2007"))
 
