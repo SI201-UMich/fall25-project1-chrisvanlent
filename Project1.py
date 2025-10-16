@@ -3,8 +3,7 @@
 # Email: cvanlent@umich.edu
 import csv
 
-# Takes in a csv file
-# Returns a dictionary of dictonaries with outer-keys of ID, inner keys of data categories, and values of data points
+
 def read_file(file):
 
     infile = open(file)
@@ -45,8 +44,7 @@ def read_file(file):
     return penguins
 
 
-# Takes in a list of string values (as well as a few NA strings)
-# Returns average value in the list
+
 def calculate_average_conditional(penguins, conditional_categories, conditional_values, data_category):
     sum = 0
     count = 0
@@ -75,18 +73,53 @@ def calculate_average_conditional(penguins, conditional_categories, conditional_
 
 
 
-# Takes in a csv file and dictionary of dictonaries with outer-keys of islands, inner keys as years, and values as a list of bill_lengths
-# writes table of Year, Island (with highest average), and Average value into csv file for years 2007, 2008, 2009
-def write_file(penguins, file):
+def calculate_highest_conditional(penguins, conditional_categories, conditional_values, data_category):
+    max = 0
 
-    outFile = open(file, "w")
+    for penguin in penguins:
+
+        bool = True
+
+        for i in range(len(conditional_categories)):
+
+            # print(conditional_categories[i])
+
+            if penguins[penguin][conditional_categories[i]] != conditional_values[i]:
+
+                bool = False
+
+
+        if bool:
+
+            if penguins[penguin][data_category] != "NA":
+                    
+
+                    if float(penguins[penguin][data_category]) > max:
+
+                        max = float(penguins[penguin][data_category])
+
+    return max
+
+
+
+def write_avg(infile, outfile):
+
+    penguins = read_file(infile)
+
+    outFile = open(outfile, "w")
 
     csv_writer = csv.writer(outFile)
 
     csv_writer.writerow(["Year", "Island", "Average"])
 
-    years = ["2007", "2008", "2009"]
+    # years = ["2007", "2008", "2009"]
+    years = ["2008"]
     islands = ["Torgersen", "Biscoe", "Dream"]
+
+    max_avg = 0
+    max_island = ""
+    max_year = ""
+
 
     for year in years:
 
@@ -94,35 +127,76 @@ def write_file(penguins, file):
 
             avg = calculate_average_conditional(penguins, ["island", "year"], [island, year], "bill_length")
 
-            outlist = [year, island, avg]
+            # outlist = [year, island, avg]
 
-            csv_writer.writerow(outlist)
+            # csv_writer.writerow(outlist)
+
+            if avg > max_avg:
+
+                max_avg = avg
+                max_island = island
+                max_year = year
+
+    outlist = [max_year, max_island, max_avg]
+
+    csv_writer.writerow(outlist)
+
 
     outFile.close
 
-    
+
+def write_largest(infile, outfile):
+
+    penguins = read_file(infile)
+
+    outFile = open(outfile, "w")
+
+    csv_writer = csv.writer(outFile)
+
+    csv_writer.writerow(["Species", "Sex", "Largest"])
+
+    species = ["Adelie", "Gentoo"]
+    sex = ["male", "female"]
+
+    max_large = 0
+    max_species = ""
+    max_sex = ""
+
+
+    for sp in species:
+
+        for se in sex:
+
+            large = calculate_highest_conditional(penguins, ["species", "sex"], [sp, se], "body_mass")
+
+            # outlist = [sp, se, large]
+
+            # csv_writer.writerow(outlist)
+
+            if large > max_large:
+
+                max_large = large
+                max_species = sp
+                max_sex = se
+
+    outlist = [max_species, max_sex, max_large]
+
+    # print(outlist)
+
+    csv_writer.writerow(outlist)
+
+
+    outFile.close
+
+
+def main():
 
 
 
+    write_avg("penguins.csv", "avg_output.csv")
+
+    write_largest("penguins.csv", "large_output.csv")
 
 
 
-
-
-
-penguins = read_file("penguins.csv")
-
-# print(penguins)
-
-# average = calculate_average_conditional(penguins,["island", "year"],["Torgersen", "2009"],"bill_length")
-
-# print(average)
-
-# print(highest_average(penguins,"island",["Torgersen", "Biscoe", "Dream"], "bill_length"))
-
-
-
-# print(compare_islands(penguins, "2007"))
-
-write_file(penguins, "output.csv")
-
+main()
