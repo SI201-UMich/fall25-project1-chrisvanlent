@@ -53,7 +53,7 @@ def compare_islands(penguins, year):
     for island in penguins:
 
         avg = calculate_average(penguins[island][year])
-        print(island + ": " + str(avg))
+        # print(island + ": " + str(avg))
 
         if avg > max:
 
@@ -61,6 +61,30 @@ def compare_islands(penguins, year):
             max_island = island
 
     return max_island
+
+def write_file(penguins, file):
+
+    outFile = open(file, "w")
+
+    csv_writer = csv.writer(outFile)
+
+    csv_writer.writerow(["Year", "Island", "Average"])
+
+    years = ["2007", "2008", "2009"]
+
+    for year in years:
+
+        island = compare_islands(penguins, year)
+
+        outlist = [year, island, calculate_average(penguins[island][year])]
+
+        # print(outlist)
+
+        csv_writer.writerow(outlist)
+
+    outFile.close
+
+    
 
 
 
@@ -76,5 +100,7 @@ penguins = read_file("penguins.csv")
 
 
 
-print(compare_islands(penguins, "2007"))
+# print(compare_islands(penguins, "2007"))
+
+write_file(penguins, "output.csv")
 
